@@ -86,3 +86,24 @@ pred = predictOneVsAll(all_theta, X);
 
 fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
 
+
+
+%  Randomly permute examples
+rp = randperm(m);
+
+for i = 1:m
+    % Display 
+    fprintf('\nDisplaying Example Image\n');
+    displayData(X(rp(i), :));
+
+    pred = predictOneVsAll(all_theta, X(rp(i),:));
+    fprintf('\nNeural Network Prediction: %d (digit %d)\n', pred, mod(pred, 10));
+    
+    % Pause with quit option
+    s = input('Paused - press enter to continue, q to exit:','s');
+    if s == 'q'
+      break
+    end
+end
+
+
