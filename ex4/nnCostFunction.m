@@ -62,12 +62,46 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+Y = zeros(num_labels, size(y)); % k * m 
+for i = 1:size(y),
+	Y(y(i), i) = 1;
+end
+
+X = [ones(m, 1) X];
 
 
+A1 = sigmoid(X*Theta1'); %  m*s2
+A1 = [ones(size(A1,1), 1) A1];  % add bias
+H = sigmoid(A1*Theta2'); % m*k
+
+T1 = Theta1(:, 2:end);
+T2 = Theta2(:, 2:end);
+
+J = -1/m * sum(sum(Y' .* log(H) + (1-Y').*log(1-H))) + lambda/2/m* (sum(sum(T1.^2)) +sum(sum(T2.^2)));
 
 
+DELTA1 = zeros(size(Theta1));
+DELTA2 = zeros(size(Theta2));
 
+for i = 1:m,
+	yvector = zeros(num_labels, 1);
+	yvector(y(i)) = 1;
 
+	z2 = Theta1 * X(i, :)';
+	a2 = sigmoid(z2);
+	a2more = [1;a2];
+	z3 = Theta2 * a2more;
+	a3 = sigmoid(z3);
+	delta3 = a3 - yvector;
+	delta2 = Theta2'*delta3;
+	delta2 =  delta2(2:end).* sigmoidGradient(z2);
+	
+	DELTA1 = DELTA1+ delta2 * X(i, :);
+	DELTA2 = DELTA2+ delta3 * a2more';
+end
+
+Theta1_grad = 1/m * DELTA1 + lambda / m * [zeros(size(T1, 1), 1) T1];
+Theta2_grad = 1/m * DELTA2 + lambda / m * [zeros(size(T2, 1), 1) T2];
 
 
 
