@@ -16,7 +16,9 @@ sim = 0;
 %
 %
 
+dis = x1 - x2;
 
+sim = exp( - (dis'*dis) / 2/ (sigma^2) );
 
 
 

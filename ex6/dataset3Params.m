@@ -23,8 +23,27 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+Cs = [0.01; 0.03; 0.1; 0.3 ;1; 3; 10;30];
+sigmas = [0.01; 0.03; 0.1; 0.3 ;1; 3; 10;30];
 
+%Cs = [0.3; 1; 3];
+%sigmas = [0.3;1;3];
+errs = 1;
 
+for i = 1:size(Cs),
+	eachC = Cs(i);
+	for j = 1:size(sigmas),
+		eachS = sigmas(j);
+		model = svmTrain(X, y, eachC, @(x1, x2) gaussianKernel(x1, x2, eachS)); 
+		predictions = svmPredict(model, Xval);
+		m = mean(double(predictions ~= yval));
+		if m < errs,
+			errs = m;
+			C = eachC;
+			sigma = eachS;
+		end
+	end
+end
 
 
 
