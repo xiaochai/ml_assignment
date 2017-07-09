@@ -41,13 +41,31 @@ Theta_grad = zeros(size(Theta));
 %
 
 
+for i = 1:num_movies,
+	for j = 1:num_users,
+		if R(i,j) == 0 
+			continue;
+		end
 
+		wucha = X(i, :) * (Theta(j,:))' - Y(i,j);
+		J = J + wucha ^2;
+		X_grad(i,:) = X_grad(i,:) + wucha * Theta(j,:);
+	end;
+	X_grad(i,:)  = X_grad(i,:) + lambda*X(i,:);
+end;
 
+for j = 1:num_users,
+	for i = 1:num_movies,
+		if R(i,j) == 0
+			continue
+		end
+		wucha = X(i,:) * (Theta(j,:))' - Y(i,j);
+		Theta_grad(j, :) = Theta_grad(j, :) + wucha * X(i, :);
+	end
+	Theta_grad(j, :) = Theta_grad(j, :) + lambda * Theta(j,:);
+end
 
-
-
-
-
+J = J/2 + lambda /2 *sum(sum(X.^2)) + lambda/2 * sum(sum(Theta.^2));
 
 
 
